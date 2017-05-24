@@ -1,5 +1,5 @@
 package me.elendrial.hearthclone.server;
 
 public class ClientSettings {
-	public static String username;
+	public static String username = "Unnamed User";
 }

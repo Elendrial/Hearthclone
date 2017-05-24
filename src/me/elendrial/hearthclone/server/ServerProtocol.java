@@ -36,7 +36,7 @@ public class ServerProtocol extends GameProtocol{
 			data = in.readLine();
 			if(data.contains("disconnect:")) disconnect();
 			else if(data.startsWith("chat:"))chatHandler(data);
-			else out.println(data);
+			else if(data.equals("init")) generalSetup();
 
 			System.out.println("[Server-" + id + "][From Client]: " + data);
 		} catch (IOException e) {
@@ -46,11 +46,8 @@ public class ServerProtocol extends GameProtocol{
 	}
 
 	@Override
-	public void sendSetup() {
-	}
-
-	@Override
-	public void recieveSetup() {
+	public void generalSetup() {
+		sendData("init");
 	}
 	
 	public void disconnect(){
@@ -74,14 +71,14 @@ public class ServerProtocol extends GameProtocol{
 	public void chatHandler(String data){
 		// Special Cases
 		if(data.contains("-sendall")){
-			this.sendData("chat:-logsinc-");
+			this.sendData("chat:-logsinc");
 			for(String s : chatLogs) this.sendData(s);
-			this.sendData("chat:-logsfin-");
+			this.sendData("chat:-logsfin");
 			return;
 		}
 		
 		// General Chat
-		data = "[" + Instant.now() + "]" + data.substring(5);
+		data = "[" + Instant.now().toString().substring(10, 19) + "]" + data.substring(5);
 		chatLogs.add(data);
 		
 		for(GameProtocol connection : GameServer.getConnections()) connection.sendData("chat:" + data);
