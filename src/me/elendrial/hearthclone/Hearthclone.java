@@ -14,7 +14,6 @@ import me.elendrial.hearthclone.cardVars.SetEnum;
 import me.elendrial.hearthclone.cardVars.TribeEnum;
 import me.elendrial.hearthclone.cardVars.TypeEnum;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
-import me.elendrial.hearthclone.display.HearthWindow;
 
 public class Hearthclone {
 	
@@ -35,7 +34,7 @@ public class Hearthclone {
 		//	deckSetup();
 		containerSetup();
 		
-		Controller.startGame(new HearthWindow("Hearthclone", 1200, 750));
+		HearthController.startGame("Hearthclone", 1200, 750);
 	}
 	
 	public static HearthstoneCard cardA, cardB;
