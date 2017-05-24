@@ -61,3 +61,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.project
+.classpath
+*.prefs
+bin/json/cards/cards.json
+bin/json/cards/Sample.json
+/bin/
