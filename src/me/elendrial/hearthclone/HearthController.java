@@ -33,7 +33,7 @@ public class HearthController extends Controller{
 	public static void disconnect() {
 		if(host)
 			GameServer.closeServer();
-		else
+		else if(connected)
 			GameClient.disconnectFromServer("Client Leaving.");
 		host = false;
 		connected = false;

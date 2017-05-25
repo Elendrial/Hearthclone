@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import me.elendrial.cardGameBase.server.GameClient;
 import me.elendrial.hearthclone.HearthController;
 import me.elendrial.hearthclone.server.ClientProtocol;
+import me.elendrial.hearthclone.server.ClientSettings;
 import me.elendrial.hearthclone.server.ServerProtocol;
 
 public class MenuListener implements ActionListener{
@@ -36,6 +37,11 @@ public class MenuListener implements ActionListener{
 				break;
 			case "Exit":
 				HearthController.disconnect();
+				HearthController.stopGame();
+				System.exit(0);
+				break;
+			case "Temp":
+				ClientSettings.username = JOptionPane.showInputDialog(null, "Chat Name:");
 				break;
 			}
 		}

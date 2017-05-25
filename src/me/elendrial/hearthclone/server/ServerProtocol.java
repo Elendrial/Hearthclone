@@ -54,6 +54,7 @@ public class ServerProtocol extends GameProtocol{
 		out.close();
 		try {
 			in.close();
+			socket.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
@@ -78,7 +79,7 @@ public class ServerProtocol extends GameProtocol{
 		}
 		
 		// General Chat
-		data = "[" + Instant.now().toString().substring(10, 19) + "]" + data.substring(5);
+		data = "[" + Instant.now().toString().substring(11, 19) + "]" + data.substring(5);
 		chatLogs.add(data);
 		
 		for(GameProtocol connection : GameServer.getConnections()) connection.sendData("chat:" + data);

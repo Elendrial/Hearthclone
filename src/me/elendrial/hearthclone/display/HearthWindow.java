@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
@@ -16,17 +17,19 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import me.elendrial.cardGameBase.display.Window;
+import me.elendrial.cardGameBase.server.GameClient;
+import me.elendrial.hearthclone.server.ClientProtocol;
 
 public class HearthWindow extends Window {
 
 	// GUI elements
 	public JMenuBar menuBar;
 	public JMenu game, cards;
-	public JMenuItem host, connect, chat, exit;
+	public JMenuItem host, connect, chat, temp, exit;
 	public JMenuItem deckManage, cardManage;
 	
 	public JLayeredPane layeredPane;
-	public JPanel chatPanel;
+	public JPanel chatBoxPanel, chatFieldPanel;
 	public JTextArea chatBox;
 	public JTextField chatInput;
 	public Font smallFont;
@@ -43,6 +46,7 @@ public class HearthWindow extends Window {
 		host = new JMenuItem("Host", KeyEvent.VK_H); connect = new JMenuItem("Connect", KeyEvent.VK_C); chat = new JMenuItem("Chat", KeyEvent.VK_A); exit = new JMenuItem("Exit", KeyEvent.VK_E);
 		deckManage = new JMenuItem("Manage Decks", KeyEvent.VK_D); cardManage = new JMenuItem("Manage Cards", KeyEvent.VK_C);
 		
+		temp = new JMenuItem("Temp");
 		
 		menuBar = new JMenuBar();
 
@@ -58,6 +62,9 @@ public class HearthWindow extends Window {
 		chat.addActionListener(MenuListener.self);
 		game.add(chat);
 		
+		temp.addActionListener(MenuListener.self);
+		game.add(temp);
+		
 		exit.addActionListener(MenuListener.self);
 		game.add(exit);
 		
@@ -70,19 +77,29 @@ public class HearthWindow extends Window {
 		this.frame.setJMenuBar(menuBar);
 		
 		smallFont = new Font(Font.MONOSPACED, Font.PLAIN, 10); 
-		chatPanel = new JPanel(new BorderLayout()); chatPanel.setBorder(new EmptyBorder(2,3,3,2)); chatPanel.setSize(250, 300); chatPanel.setBounds(width - 2 - chatPanel.getSize().width, height - 2 - chatPanel.getSize().height, chatPanel.getSize().width, chatPanel.getSize().height);
-		chatBox = new JTextArea(5, 5); chatBox.setFont(smallFont); chatBox.setEditable(false); chatBox.setLineWrap(true);
+		chatBoxPanel = new JPanel(new BorderLayout()); chatBoxPanel.setBorder(new EmptyBorder(2,3,3,2)); chatBoxPanel.setSize(250, 270); chatBoxPanel.setBounds(width - 2 - chatBoxPanel.getSize().width, height - 28 - chatBoxPanel.getSize().height, chatBoxPanel.getSize().width, chatBoxPanel.getSize().height);
+		chatBox = new JTextArea(5, 5); chatBox.setFont(smallFont); chatBox.setEditable(false); chatBox.setLineWrap(true); chatBox.setAutoscrolls(true);
+		chatFieldPanel = new JPanel(new BorderLayout()); chatFieldPanel.setSize(250, 20); chatFieldPanel.setBounds(width - 2 - chatFieldPanel.getSize().width, height - 2 - chatFieldPanel.getSize().height, chatFieldPanel.getSize().width, chatFieldPanel.getSize().height);
+		chatInput = new JTextField(10); chatInput.setFont(smallFont); 
+		
+		chatInput.addKeyListener(new KeyListener(){
+			@Override public void keyPressed(KeyEvent arg0) {if(arg0.getKeyCode() == KeyEvent.VK_ENTER){ ((ClientProtocol) GameClient.getProtocol()).sendChat(chatInput.getText());chatInput.setText("");}}
+			@Override public void keyReleased(KeyEvent arg0) {}@Override public void keyTyped(KeyEvent arg0) {}
+		});
 		
 		layeredPane = new JLayeredPane(); layeredPane.setPreferredSize(new Dimension(width-4, height-10));
 		
-		chatPanel.add(new JScrollPane(chatBox,
+		chatBoxPanel.add(new JScrollPane(chatBox,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+		
+		chatFieldPanel.add(chatInput);
 		
 		this.display = new HearthDisplay(this);
 		layeredPane.add(this.display, new Integer(0));
 		
-		layeredPane.add(chatPanel, new Integer(1));
+		layeredPane.add(chatBoxPanel, new Integer(1));
+		layeredPane.add(chatFieldPanel, new Integer(1));
 		
 		frame.add(layeredPane);
 	}

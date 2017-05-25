@@ -47,6 +47,7 @@ public class ClientProtocol extends GameProtocol{
 		out.close();
 		try {
 			in.close();
+			socket.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
