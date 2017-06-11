@@ -1,6 +1,10 @@
 package me.elendrial.hearthclone;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import me.elendrial.cardGameBase.Controller;
+import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.server.GameClient;
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.cardGameBase.server.GameServer;
@@ -10,6 +14,8 @@ public class HearthController extends Controller{
 	
 	public static boolean host = false;
 	public static boolean connected = false;
+	public static ArrayList<String> usersOnHost = new ArrayList<String>();
+	public static HashMap<String, BaseContainer> containers = new HashMap<String, BaseContainer>();
 	
 	public static void startGame(String windowTitle, int windowWidth, int windowHeight){
 		startGame(new HearthWindow(windowTitle, windowWidth, windowHeight));

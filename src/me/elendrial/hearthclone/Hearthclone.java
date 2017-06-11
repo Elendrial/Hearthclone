@@ -4,9 +4,7 @@ import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import me.elendrial.cardGameBase.Controller;
 import me.elendrial.cardGameBase.cards.StandardCard;
-import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.decks.StandardDeck;
 import me.elendrial.hearthclone.cardVars.ClassEnum;
 import me.elendrial.hearthclone.cardVars.RarityEnum;
@@ -14,6 +12,8 @@ import me.elendrial.hearthclone.cardVars.SetEnum;
 import me.elendrial.hearthclone.cardVars.TribeEnum;
 import me.elendrial.hearthclone.cardVars.TypeEnum;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
+import me.elendrial.hearthclone.containers.MainMenuContainer;
+import me.elendrial.hearthclone.containers.MatchContainer;
 
 public class Hearthclone {
 	
@@ -59,7 +59,8 @@ public class Hearthclone {
 	}
 	
 	public static void containerSetup(){
-		Controller.mainContainer = new BaseContainer(new StandardDeck[]{/*deckA, deckB*/});
+		HearthController.containers.put("mainMenu", new MainMenuContainer());
+		HearthController.containers.put("match", new MatchContainer());
 	}
 	
 }

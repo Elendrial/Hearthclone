@@ -14,19 +14,20 @@ public class ClientProtocol extends GameProtocol{
 		while(!socket.isClosed()) recieveData();
 	}
 	
-	
 	@Override
-	public void sendData() {
-		
+	public void sendData(String s){
+		System.out.println("[Client]: Sending >>>>>>>> " + s);
+		super.sendData(s);
 	}
-
+	
 	@Override
 	public void recieveData() {
 		String data;
 		try {
-			System.out.println("[Client]: Waiting to recieve data");
+		//	System.out.println("[Client]: Waiting to recieve data");
 			data = in.readLine();
 			if(data.contains("disconnect:")) disconnect();
+			else if(data.startsWith("info:")) infoHandler(data);
 			else if(data.startsWith("chat:")) chatHandler(data);
 			else if(data.equals("init")) generalSetup();
 
@@ -39,7 +40,12 @@ public class ClientProtocol extends GameProtocol{
 
 	@Override
 	public void generalSetup() {
-		sendChat("-- Has Joined Chat --");
+		sendData("info:-userJoin " + ClientSettings.username);
+		recieveData();
+		sendData("info:-sendUserList");
+		recieveData();
+		
+		HearthController.mainContainer = HearthController.containers.get("mainMenu");
 	}
 
 
@@ -62,9 +68,9 @@ public class ClientProtocol extends GameProtocol{
 	}
 	
 	private static ArrayList<String> chatLogs = new ArrayList<String>();
-	
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> getChatLogs(){return (ArrayList<String>) chatLogs.clone();}
+	
 	
 	public void chatHandler(String data){
 		// Special Cases
@@ -83,5 +89,37 @@ public class ClientProtocol extends GameProtocol{
 		chatLogs.add(data.substring(5));
 		((HearthDisplay) HearthController.mainWindow.display).updateChat();
 	}
+	
 
+	public void infoHandler(String data){
+		if(data.contains("-userListInc")){
+			String data2;
+			HearthController.usersOnHost = new ArrayList<String>();
+			try {
+				while(!(data2 = in.readLine()).contains("-userListFin")){
+					HearthController.usersOnHost.add(data2);
+				}
+			} catch (IOException e) {e.printStackTrace();}
+			HearthController.usersOnHost.remove(ClientSettings.username);
+			return;
+		}
+		
+		if(data.contains("-userNameChange")){
+			if(!data.contains(ClientSettings.username)){
+				HearthController.usersOnHost.remove(data.split("->")[0].replace("info:-userNameChange ", ""));
+				HearthController.usersOnHost.add(data.split("->")[1]);
+			}
+			chatLogs.add("   -- " + data.split("->")[0].replace("info:-userNameChange ", "") + " -> " + data.split("->")[1] + " --");
+			((HearthDisplay) HearthController.mainWindow.display).updateChat();
+		}
+		
+		if(data.contains("-userJoin")){
+			String username = data.replace("info:-userJoin ", "");
+			chatLogs.add("   -- " + username + " Has Joined Chat. --");
+			((HearthDisplay) HearthController.mainWindow.display).updateChat();
+			
+			if(!username.equals(ClientSettings.username))HearthController.usersOnHost.add(username);
+		}
+	}
+	
 }
