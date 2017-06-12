@@ -18,7 +18,7 @@ import me.elendrial.hearthclone.containers.MatchContainer;
 public class Hearthclone {
 	
 	public static void main(String[] args) throws FileNotFoundException{
-		//cardSetup();
+	/*	//cardSetup();
 		
 		//CardLoader.printCard(cardA);
 		
@@ -31,7 +31,7 @@ public class Hearthclone {
 	//	cardA = cards[0];
 	//	System.out.println(cardA.name);
 		
-		//	deckSetup();
+		//	deckSetup();*/
 		containerSetup();
 		
 		HearthController.startGame("Hearthclone", 1200, 750);

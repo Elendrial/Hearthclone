@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.hearthclone.HearthController;
-import me.elendrial.hearthclone.display.HearthDisplay;
+import me.elendrial.hearthclone.display.HearthWindow;
 
 public class ClientProtocol extends GameProtocol{
 
@@ -87,7 +87,7 @@ public class ClientProtocol extends GameProtocol{
 		
 		// General Chat
 		chatLogs.add(data.substring(5));
-		((HearthDisplay) HearthController.mainWindow.display).updateChat();
+		((HearthWindow) HearthController.mainWindow).updateChat();
 	}
 	
 
@@ -110,13 +110,13 @@ public class ClientProtocol extends GameProtocol{
 				HearthController.usersOnHost.add(data.split("->")[1]);
 			}
 			chatLogs.add("   -- " + data.split("->")[0].replace("info:-userNameChange ", "") + " -> " + data.split("->")[1] + " --");
-			((HearthDisplay) HearthController.mainWindow.display).updateChat();
+			((HearthWindow) HearthController.mainWindow).updateChat();
 		}
 		
 		if(data.contains("-userJoin")){
 			String username = data.replace("info:-userJoin ", "");
 			chatLogs.add("   -- " + username + " Has Joined Chat. --");
-			((HearthDisplay) HearthController.mainWindow.display).updateChat();
+			((HearthWindow) HearthController.mainWindow).updateChat();
 			
 			if(!username.equals(ClientSettings.username))HearthController.usersOnHost.add(username);
 		}

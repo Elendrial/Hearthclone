@@ -16,12 +16,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import me.elendrial.cardGameBase.display.Display;
 import me.elendrial.cardGameBase.display.Window;
 import me.elendrial.cardGameBase.server.GameClient;
+import me.elendrial.hearthclone.HearthController;
 import me.elendrial.hearthclone.server.ClientProtocol;
 
 public class HearthWindow extends Window {
 
+	public HearthOverlay hOverlay = new HearthOverlay();
+	
 	// GUI elements
 	public JMenuBar menuBar;
 	public JMenu game, cards;
@@ -95,7 +99,9 @@ public class HearthWindow extends Window {
 		
 		chatFieldPanel.add(chatInput);
 		
-		this.display = new HearthDisplay(this);
+		this.display = new Display(this);
+		this.display.overlays.add(hOverlay);
+		
 		layeredPane.add(this.display, new Integer(0));
 		
 		layeredPane.add(chatBoxPanel, new Integer(1));
@@ -103,5 +109,15 @@ public class HearthWindow extends Window {
 		
 		frame.add(layeredPane);
 	}
-
+	
+	public void updateChat(){
+		String text = "";
+		
+		for(String s : ClientProtocol.getChatLogs()){
+			text += "\n" + s;
+		}
+		
+		((HearthWindow)HearthController.mainWindow).chatBox.setText(text);
+	}
+	
 }

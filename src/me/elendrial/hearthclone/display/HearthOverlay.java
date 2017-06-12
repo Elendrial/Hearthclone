@@ -3,12 +3,13 @@ package me.elendrial.hearthclone.display;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import me.elendrial.cardGameBase.display.Overlay;
 import me.elendrial.cardGameBase.server.GameClient;
 import me.elendrial.hearthclone.HearthController;
 
-public class HearthOverlay {
+public class HearthOverlay implements Overlay{
 	
-	public static void render(Graphics g){
+	public void render(Graphics g){
 		connection(g);
 	}
 	
