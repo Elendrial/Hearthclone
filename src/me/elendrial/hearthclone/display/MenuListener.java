@@ -41,7 +41,7 @@ public class MenuListener implements ActionListener{
 				System.exit(0);
 				break;
 			case "Temp":
-				ClientSettings.username = JOptionPane.showInputDialog(null, "Chat Name:");
+				ClientSettings.username = JOptionPane.showInputDialog(null, "Chat Name:").replace("-", "_").trim();
 				if(GameClient.isRunning()) GameClient.getProtocol().sendData("info:-nameChange " + ClientSettings.username);
 				break;
 			}

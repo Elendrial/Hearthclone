@@ -14,6 +14,7 @@ public class ServerProtocol extends GameProtocol{
 	
 	private static ArrayList<String> chatLogs = new ArrayList<String>();
 	private String username;
+	protected ServerProtocol opponent;
 	
 	public ServerProtocol() {super();}
 
@@ -40,6 +41,7 @@ public class ServerProtocol extends GameProtocol{
 			if(data.startsWith("disconnect:")) disconnect();
 			else if(data.startsWith("info:")) infoHandler(data);
 			else if(data.startsWith("chat:")) chatHandler(data);
+			else if(data.startsWith("challenge:")) challengeHandler(data);
 			else if(data.equals("init")) generalSetup();
 
 			System.out.println("[Server-" + id + "][From Client]: " + data);
@@ -105,11 +107,44 @@ public class ServerProtocol extends GameProtocol{
 		}
 		
 		if(data.contains("-userJoin")){
-			System.out.println("DATA :: " + data);
-			username = data.replace("info:-userJoin ", "");
-			HearthController.usersOnHost.add(username);
-			for(GameProtocol connection : GameServer.getConnections()) connection.sendData("info:-userJoin " + username);
+			if(!HearthController.usersOnHost.contains(data.replace("info:-userJoin ", ""))){
+				username = data.replace("info:-userJoin ", "");
+				HearthController.usersOnHost.add(username);
+				for(GameProtocol connection : GameServer.getConnections()) connection.sendData("info:-userJoin " + username);
+			}
+			else{
+				this.sendData("info:-userJoinFail"); //TODO: Implement this on the client and check it works (Priority: Low-Medium)
+			}
+		}
+	}
+
+	//TODO: Finish challenge handler (Priority: High)
+	public void challengeHandler(String data) throws IOException{
+		if(data.contains("-init ")){
+			// --> Before: check other client agrees to match.
+			String opponentUsername = data.replace("challenge:-init ", "");
 			
+			for(GameProtocol connection : GameServer.getConnections()) if(((ServerProtocol) connection).username.equals(opponentUsername)) connection.sendData("challenge:-chalBy " + username);
+			String data2 = in.readLine();
+			if(data2.contains("deny")){sendData("challenge:-reject " + opponentUsername); return;}
+			
+			for(GameProtocol connection : GameServer.getConnections()) if(((ServerProtocol) connection).username.equals(opponentUsername)){ 
+				((ServerProtocol) connection).opponent = this;
+				this.opponent = (ServerProtocol) connection;
+			}
+			
+			
+			// First : Ask which deck each player would like to use
+			sendData("challenge:-chooseDeck");
+			opponent.sendData("challenge:-chooseDeck");
+			
+			// Second: Check card collections are compatible.
+				// Uses hashes from all the sets that will be used, may need to be improved.
+			
+			
+			// Third : Setup a MatchContainer with these two decks
+			// Fourth: Tell both clients that setup is complete, have them load their respective MatchContainers
+			// --> After: All draws come from server, client and server check whether plays are valid etc.
 		}
 	}
 }
