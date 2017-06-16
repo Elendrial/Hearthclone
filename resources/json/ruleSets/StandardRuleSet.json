@@ -1,0 +1,15 @@
+{
+	"name": "Standard",
+	"maxTotalDeckSize": 60,
+	"minStartingDeckSize": 30,
+	"maxStartingDeckSize": 30,
+	"onFatigue": "Increasing",
+	"startingFatigueDamage": 1,
+	"setLimit": true,
+	"allowedSets":[
+		"wotog",
+		"kara",
+		"msog",
+		"ungoro"
+	]
+}

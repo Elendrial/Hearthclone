@@ -1,0 +1,9 @@
+{
+	"name": "Test Deck of testing",
+	"cardIDs": [
+		"CS2_119",
+		"LOEA15_2",
+		"AT_005t"
+	],
+	"deckClass": "MAGE"
+}
