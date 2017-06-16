@@ -24,7 +24,7 @@ import me.elendrial.hearthclone.server.ClientProtocol;
 
 public class HearthWindow extends Window {
 
-	public HearthOverlay hOverlay = new HearthOverlay();
+	public HearthOverlay hOverlay;
 	
 	// GUI elements
 	public JMenuBar menuBar;
@@ -100,6 +100,8 @@ public class HearthWindow extends Window {
 		chatFieldPanel.add(chatInput);
 		
 		this.display = new Display(this);
+		
+		hOverlay = new HearthOverlay();
 		this.display.overlays.add(hOverlay);
 		
 		layeredPane.add(this.display, new Integer(0));
