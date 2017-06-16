@@ -2,6 +2,7 @@ package me.elendrial.hearthclone;
 
 import java.awt.Point;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import me.elendrial.cardGameBase.cards.StandardCard;
@@ -11,7 +12,7 @@ import me.elendrial.hearthclone.cardVars.RarityEnum;
 import me.elendrial.hearthclone.cardVars.SetEnum;
 import me.elendrial.hearthclone.cardVars.TribeEnum;
 import me.elendrial.hearthclone.cardVars.TypeEnum;
-import me.elendrial.hearthclone.cards.CardLoader;
+import me.elendrial.hearthclone.cards.JSonLoader;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
 import me.elendrial.hearthclone.containers.MainMenuContainer;
 import me.elendrial.hearthclone.containers.MatchContainer;
@@ -19,7 +20,11 @@ import me.elendrial.hearthclone.containers.MatchContainer;
 public class Hearthclone {
 	
 	public static void main(String[] args) throws FileNotFoundException{
-		CardLoader.loadAllCards();
+		try {
+			JSonLoader.loadAllCards();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		containerSetup();
 		
