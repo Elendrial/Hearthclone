@@ -11,6 +11,7 @@ import me.elendrial.hearthclone.cardVars.RarityEnum;
 import me.elendrial.hearthclone.cardVars.SetEnum;
 import me.elendrial.hearthclone.cardVars.TribeEnum;
 import me.elendrial.hearthclone.cardVars.TypeEnum;
+import me.elendrial.hearthclone.cards.CardLoader;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
 import me.elendrial.hearthclone.containers.MainMenuContainer;
 import me.elendrial.hearthclone.containers.MatchContainer;
@@ -18,20 +19,8 @@ import me.elendrial.hearthclone.containers.MatchContainer;
 public class Hearthclone {
 	
 	public static void main(String[] args) throws FileNotFoundException{
-	/*	//cardSetup();
+		CardLoader.loadAllCards();
 		
-		//CardLoader.printCard(cardA);
-		
-	//	Gson gson = new Gson();
-	//	cardB = gson.fromJson("{\"cost\":4,\"flavor\":\"flaavour\",\"cardClass\":\"MONK\",\"set\":\"BASIC\",\"race\":\"PANDAREN\",\"rarity\":\"COMMON\",\"type\":\"SPELL\",\"name\":\"Sample\",\"desc\":\"Some Desc\",\"code\":\"abcd\",\"textureName\":\"textures/cards/HearthstoneClassicBack2.png\",\"backTextureName\":\"textures/cards/HearthstoneClassicBack2.png\"}", HearthstoneCard.class);
-	//	System.out.println(cardB.type);
-	//	JsonReader json = new JsonReader(new FileReader("resources/json/cards/cards.json"));
-		
-	//	HearthstoneCard[] cards = gson.fromJson(json, HearthstoneCard[].class);
-	//	cardA = cards[0];
-	//	System.out.println(cardA.name);
-		
-		//	deckSetup();*/
 		containerSetup();
 		
 		HearthController.startGame("Hearthclone", 1200, 750);
