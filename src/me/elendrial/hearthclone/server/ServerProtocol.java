@@ -11,6 +11,7 @@ import me.elendrial.cardGameBase.server.GameServer;
 import me.elendrial.hearthclone.HearthController;
 import me.elendrial.hearthclone.cardVars.ClassEnum;
 import me.elendrial.hearthclone.cards.JsonHandler;
+import me.elendrial.hearthclone.containers.ServerMatchContainer;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.ruleSets.RuleSet;
 
@@ -21,6 +22,7 @@ public class ServerProtocol extends GameProtocol{
 	protected ServerProtocol opponent;
 	protected HearthstoneDeck deck;
 	protected RuleSet ruleSet;
+	protected ServerMatchContainer match;
 	
 	public ServerProtocol() {super();}
 
@@ -127,7 +129,7 @@ public class ServerProtocol extends GameProtocol{
 	//TODO: Finish challenge handler (Priority: High)
 	public void challengeHandler(String data) throws IOException{
 		if(data.contains("-init ")){
-			// --> Before: check other client agrees to match.
+			// --> Before: check other client agrees to match with selected rule set.
 			String opponentUsername = data.split("-")[1].replace("init ", "");
 			
 			if(HearthController.usersOnHost.contains(opponentUsername) && opponentUsername != username){
@@ -163,11 +165,18 @@ public class ServerProtocol extends GameProtocol{
 		}
 		
 		if(data.contains("-deckChosen ")){
+			// Second: Check card collections are compatible.
+			hasSetupContainer = false;
+			
 			try{
 				this.deck = JsonHandler.loadDeck(data.split("-")[1].replace("deckChosen ", "") + "-" + username + ".json");
 				if(deck.version.equals(data.split("-")[2].replace("version ", ""))){
 					sendData("load:successful");
 					loadCards();
+					
+					hasSetupContainer = true;
+					setupGameContainer();
+					
 					return;
 				}
 			}
@@ -192,20 +201,35 @@ public class ServerProtocol extends GameProtocol{
 			
 			loadCards();
 			
+			hasSetupContainer = true;
+			setupGameContainer();
+			
 			//TODO: Somehow check that the other player has all the cards WITHOUT sending the cards to them (Priority: Medium-High)
 			// Maybe ask them to send all the sets they have + hashcodes for them? If hashcodes match then go ahead, if not check individual cards? Might take a while :/
+			// For the moment we assume that they are compatible though
 			
 			return;
 		}
 	}
 	
-	public void loadCards(){
+	protected void loadCards(){
 		try {
 			JsonHandler.loadAllCards();
 			
 			
 			
 		} catch (IOException e) {e.printStackTrace();}
+	}
+	
+	protected boolean hasSetupContainer = false;
+	protected void setupGameContainer(){
+		if(this.opponent.hasSetupContainer) return;
+		
+		match = new ServerMatchContainer();
+		match.decks = new HearthstoneDeck[]{this.deck, opponent.deck};
+		
+		
+		opponent.match = this.match;
 	}
 	
 }

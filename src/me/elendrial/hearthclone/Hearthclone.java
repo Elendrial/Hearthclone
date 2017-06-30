@@ -15,7 +15,7 @@ import me.elendrial.hearthclone.cardVars.TypeEnum;
 import me.elendrial.hearthclone.cards.JsonHandler;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
 import me.elendrial.hearthclone.containers.MainMenuContainer;
-import me.elendrial.hearthclone.containers.MatchContainer;
+import me.elendrial.hearthclone.containers.ServerMatchContainer;
 
 public class Hearthclone {
 	
@@ -54,7 +54,7 @@ public class Hearthclone {
 	
 	public static void containerSetup(){
 		HearthController.containers.put("mainMenu", new MainMenuContainer());
-		HearthController.containers.put("match", new MatchContainer());
+		HearthController.containers.put("match", new ServerMatchContainer());
 	}
 	
 }
