@@ -52,7 +52,23 @@ public class HearthstoneCard extends StandardCard{
 		if(type == null) type = TypeEnum.SPELL;
 		if(set == null) set = SetEnum.CUSTOM;
 	}
-	
-	
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + attack;
+		result = prime * result + ((cardClass == null) ? 0 : cardClass.hashCode());
+		result = prime * result + cost;
+		result = prime * result + ((effect == null) ? 0 : effect.hashCode());
+		result = prime * result + ((flavor == null) ? 0 : flavor.hashCode());
+		result = prime * result + health;
+		result = prime * result + ((race == null) ? 0 : race.hashCode());
+		result = prime * result + ((rarity == null) ? 0 : rarity.hashCode());
+		result = prime * result + ((set == null) ? 0 : set.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
 	
 }

@@ -1,6 +1,8 @@
 package me.elendrial.hearthclone.cardVars;
 
 public enum ClassEnum {
+	// TODO: Add other names using @SerializedName (Priority: Low)
+	// TODO: For all enums, figure out a way to add custom ones via json. (Priority: Medium)
 	NEUTRAL,
 	WARRIOR,
 	PRIEST,

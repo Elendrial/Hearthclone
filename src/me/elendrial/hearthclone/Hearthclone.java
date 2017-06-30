@@ -12,7 +12,7 @@ import me.elendrial.hearthclone.cardVars.RarityEnum;
 import me.elendrial.hearthclone.cardVars.SetEnum;
 import me.elendrial.hearthclone.cardVars.TribeEnum;
 import me.elendrial.hearthclone.cardVars.TypeEnum;
-import me.elendrial.hearthclone.cards.JSonLoader;
+import me.elendrial.hearthclone.cards.JsonHandler;
 import me.elendrial.hearthclone.cards.HearthstoneCard;
 import me.elendrial.hearthclone.containers.MainMenuContainer;
 import me.elendrial.hearthclone.containers.MatchContainer;
@@ -21,7 +21,7 @@ public class Hearthclone {
 	
 	public static void main(String[] args) throws FileNotFoundException{
 		try {
-			JSonLoader.loadAllCards();
+			JsonHandler.loadAllCards();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

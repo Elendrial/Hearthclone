@@ -12,7 +12,7 @@ import com.google.gson.stream.JsonReader;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.ruleSets.RuleSet;
 
-public class JSonLoader {
+public class JsonHandler {
 	
 	//TODO: Ensure all cards load in correctly (Priority: Medium, probably needs to be done AFTER making the game playable).
 	public static ArrayList<HearthstoneCard> cards = new ArrayList<HearthstoneCard>();
@@ -40,6 +40,10 @@ public class JSonLoader {
 		return rs;
 	}
 	
+	public static void saveRuleSet(String ruleSetJson){
+		
+	}
+	
 	public static HearthstoneDeck loadDeck(String deckName) throws IOException{
 		Gson gson = new Gson();
 		JsonReader json = new JsonReader(new FileReader("resources/json/decks/" + deckName));
@@ -49,11 +53,15 @@ public class JSonLoader {
 		return deck;
 	}
 	
-	public static void printCard(HearthstoneCard c, boolean prettyPrinting) {
+	public static void saveDeck(String deckJson){
+		
+	}
+	
+	public static void printObject(Object o, boolean prettyPrinting) {
 		Gson gson;
 		if(prettyPrinting) gson = new GsonBuilder().setPrettyPrinting().create();
 		else gson = new Gson();
-		System.out.println(gson.toJson(c));
+		System.out.println(gson.toJson(o));
 	}
 
 }

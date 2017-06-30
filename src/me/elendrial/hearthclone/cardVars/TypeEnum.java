@@ -3,5 +3,8 @@ package me.elendrial.hearthclone.cardVars;
 public enum TypeEnum {
 	SPELL,
 	MINION,
-	WEAPON;
+	WEAPON,
+	HERO_POWER,
+	HERO,
+	ENCHANTMENT;
 }

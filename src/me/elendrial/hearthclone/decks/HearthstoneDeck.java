@@ -13,6 +13,7 @@ public class HearthstoneDeck extends StandardDeck{
 	public String[] cardIDs;
 	public ClassEnum deckClass;
 	public String ruleSetName;
+	public String version;
 	
 	public HearthstoneDeck(){}
 	

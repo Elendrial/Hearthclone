@@ -9,12 +9,18 @@ import java.util.ArrayList;
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.cardGameBase.server.GameServer;
 import me.elendrial.hearthclone.HearthController;
+import me.elendrial.hearthclone.cardVars.ClassEnum;
+import me.elendrial.hearthclone.cards.JsonHandler;
+import me.elendrial.hearthclone.decks.HearthstoneDeck;
+import me.elendrial.hearthclone.ruleSets.RuleSet;
 
 public class ServerProtocol extends GameProtocol{
 	
 	private static ArrayList<String> chatLogs = new ArrayList<String>();
 	private String username;
 	protected ServerProtocol opponent;
+	protected HearthstoneDeck deck;
+	protected RuleSet ruleSet;
 	
 	public ServerProtocol() {super();}
 
@@ -122,11 +128,21 @@ public class ServerProtocol extends GameProtocol{
 	public void challengeHandler(String data) throws IOException{
 		if(data.contains("-init ")){
 			// --> Before: check other client agrees to match.
-			String opponentUsername = data.replace("challenge:-init ", "");
+			String opponentUsername = data.split("-")[1].replace("init ", "");
 			
-			for(GameProtocol connection : GameServer.getConnections()) if(((ServerProtocol) connection).username.equals(opponentUsername)) connection.sendData("challenge:-chalBy " + username);
+			if(HearthController.usersOnHost.contains(opponentUsername) && opponentUsername != username){
+				sendData("challenge:-reject");
+				return;
+			}
+			
+			for(GameProtocol connection : GameServer.getConnections()) 
+				if(((ServerProtocol) connection).username.equals(opponentUsername)) connection.sendData("challenge:-chalBy " + username + " -ruleSet " + data.split("-")[2].replace("ruleSet ", ""));
+			
 			String data2 = in.readLine();
-			if(data2.contains("deny")){sendData("challenge:-reject " + opponentUsername); return;}
+			if(data2.contains("deny")){
+				sendData("challenge:-reject " + opponentUsername); 
+				return;
+			}
 			
 			for(GameProtocol connection : GameServer.getConnections()) if(((ServerProtocol) connection).username.equals(opponentUsername)){ 
 				((ServerProtocol) connection).opponent = this;
@@ -141,10 +157,55 @@ public class ServerProtocol extends GameProtocol{
 			// Second: Check card collections are compatible.
 				// Uses hashes from all the sets that will be used, may need to be improved.
 			
-			
 			// Third : Setup a MatchContainer with these two decks
 			// Fourth: Tell both clients that setup is complete, have them load their respective MatchContainers
 			// --> After: All draws come from server, client and server check whether plays are valid etc.
 		}
+		
+		if(data.contains("-deckChosen ")){
+			try{
+				this.deck = JsonHandler.loadDeck(data.split("-")[1].replace("deckChosen ", "") + "-" + username + ".json");
+				if(deck.version.equals(data.split("-")[2].replace("version ", ""))){
+					sendData("load:successful");
+					loadCards();
+					return;
+				}
+			}
+			catch(IOException e){}
+			sendData("load:fail");
+			
+			deck = new HearthstoneDeck();
+			deck.name = in.readLine();
+			deck.version = in.readLine();
+			deck.ruleSetName = in.readLine();
+			deck.deckClass = ClassEnum.valueOf(in.readLine());
+			
+			String data2;
+			int count = 0;
+			deck.cardIDs = new String[ruleSet.maxTotalDeckSize];
+			
+			in.readLine();
+			while(!(data2 = in.readLine()).contains("-idListFin")){
+				deck.cardIDs[count] = data2;
+				count++;
+			}
+			
+			loadCards();
+			
+			//TODO: Somehow check that the other player has all the cards WITHOUT sending the cards to them (Priority: Medium-High)
+			// Maybe ask them to send all the sets they have + hashcodes for them? If hashcodes match then go ahead, if not check individual cards? Might take a while :/
+			
+			return;
+		}
 	}
+	
+	public void loadCards(){
+		try {
+			JsonHandler.loadAllCards();
+			
+			
+			
+		} catch (IOException e) {e.printStackTrace();}
+	}
+	
 }

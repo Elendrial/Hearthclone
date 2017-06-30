@@ -14,7 +14,7 @@ public class HearthController extends Controller{
 	
 	public static boolean host = false;
 	public static boolean connected = false;
-	public static ArrayList<String> usersOnHost = new ArrayList<String>();
+	public static ArrayList<String> usersOnHost = new ArrayList<String>(); // TODO: Switch this for hashmap<id, name>. (Priority: Low-Medium)
 	public static HashMap<String, BaseContainer> containers = new HashMap<String, BaseContainer>();
 	
 	public static void startGame(String windowTitle, int windowWidth, int windowHeight){

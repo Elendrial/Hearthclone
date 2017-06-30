@@ -1,0 +1,17 @@
+[
+	{
+        "attack": 7,
+        "cardClass": "NEUTRAL",
+        "collectible": true,
+        "cost": 7,
+        "flavor": "The crowd ALWAYS yells lethal.",
+        "health": 2,
+        "id": "testCustom1",
+        "name": "Crowd Failure",
+        "playerClass": "NEUTRAL",
+        "rarity": "EPIC",
+        "set": "TGT",
+        "text": "Whenever you play a card with <b>Battlecry</b>, gain +1/+1.",
+        "type": "MINION"
+    }
+]

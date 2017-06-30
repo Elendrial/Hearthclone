@@ -1,10 +1,17 @@
 package me.elendrial.hearthclone.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.hearthclone.HearthController;
+import me.elendrial.hearthclone.cards.JsonHandler;
+import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.display.HearthWindow;
 
 public class ClientProtocol extends GameProtocol{
@@ -30,6 +37,7 @@ public class ClientProtocol extends GameProtocol{
 			else if(data.startsWith("info:")) infoHandler(data);
 			else if(data.startsWith("chat:")) chatHandler(data);
 			else if(data.equals("init")) generalSetup();
+			else if(data.startsWith("challenge:")) challengeHandler(data);
 
 			System.out.println("[Client]: From Server: " + data);
 		} catch (IOException e) {
@@ -119,6 +127,53 @@ public class ClientProtocol extends GameProtocol{
 			((HearthWindow) HearthController.mainWindow).updateChat();
 			
 			if(!username.equals(ClientSettings.username))HearthController.usersOnHost.add(username);
+		}
+	}
+	
+	public void challengeHandler(String data) throws IOException{
+		if(data.contains("-init ")){
+			// TODO: Implement this into an in-window menu system, rather than an additional popup. (Priority: Low)
+			String opponentUsername = data.split("-")[1].replace("init ", "");
+			String ruleSet = data.split("-")[2].replace("ruleSet ", "");
+			
+			int accept = JOptionPane.showOptionDialog(null, "You have recieved a challenge from " + opponentUsername + " using the " + ruleSet + "rule set.", "Challenge", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Accept", "Deny"}, "Accept");
+			
+			if(accept != 0){
+				sendData("challenge:-deny");
+			}
+			else sendData("challenge:-accept");
+			return;
+		}
+		
+		if(data.contains("-reject")){
+			JOptionPane.showMessageDialog(null, "Challenge Rejected.");
+			return;
+		}
+		
+		if(data.contains("-chooseDeck")){
+			String deckName = JOptionPane.showInputDialog(null, "Which deck would you like to use?");
+			List<File> a = Arrays.asList((new File("resources/json/decks")).listFiles());
+			
+			while(!a.contains(deckName)){
+				JOptionPane.showMessageDialog(null, "That is not a deck in your resources/json/decks folder.");
+				deckName = JOptionPane.showInputDialog(null, "Which deck would you like to use?");
+			}
+			
+			HearthstoneDeck deck = JsonHandler.loadDeck(deckName);
+			sendData("challenge:-deckChosen " + deckName + "-version " + deck.version);
+			
+			String data2 = in.readLine();
+			if(data2.equals("load:successful")) return;
+			
+			sendData(deck.name);
+			sendData(deck.version);
+			sendData(deck.ruleSetName);
+			sendData(deck.deckClass.name());
+			
+			sendData("-idListInc");
+			for(String s : deck.cardIDs) sendData(s);
+			sendData("-idListFin");
+			
 		}
 	}
 	
