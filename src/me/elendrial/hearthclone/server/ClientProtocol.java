@@ -10,9 +10,9 @@ import javax.swing.JOptionPane;
 
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.hearthclone.HearthController;
-import me.elendrial.hearthclone.cards.JsonHandler;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.display.HearthWindow;
+import me.elendrial.hearthclone.general.JsonHandler;
 
 public class ClientProtocol extends GameProtocol{
 

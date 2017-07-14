@@ -10,9 +10,9 @@ import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.cardGameBase.server.GameServer;
 import me.elendrial.hearthclone.HearthController;
 import me.elendrial.hearthclone.cardVars.ClassEnum;
-import me.elendrial.hearthclone.cards.JsonHandler;
 import me.elendrial.hearthclone.containers.ServerMatchContainer;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
+import me.elendrial.hearthclone.general.JsonHandler;
 import me.elendrial.hearthclone.ruleSets.RuleSet;
 
 public class ServerProtocol extends GameProtocol{

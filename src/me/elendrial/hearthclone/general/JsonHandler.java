@@ -1,4 +1,4 @@
-package me.elendrial.hearthclone.cards;
+package me.elendrial.hearthclone.general;
 
 import java.io.File;
 import java.io.FileReader;
@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
+import me.elendrial.hearthclone.cards.HearthstoneCard;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.ruleSets.RuleSet;
 

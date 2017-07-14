@@ -1,5 +1,6 @@
 package me.elendrial.hearthclone;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,7 +9,9 @@ import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.server.GameClient;
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.cardGameBase.server.GameServer;
+import me.elendrial.hearthclone.containers.MainMenuContainer;
 import me.elendrial.hearthclone.display.HearthWindow;
+import me.elendrial.hearthclone.general.JsonHandler;
 
 public class HearthController extends Controller{
 	
@@ -18,6 +21,15 @@ public class HearthController extends Controller{
 	public static HashMap<String, BaseContainer> containers = new HashMap<String, BaseContainer>();
 	
 	public static void startGame(String windowTitle, int windowWidth, int windowHeight){
+		
+		try {
+			JsonHandler.loadAllCards();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		HearthController.containers.put("mainMenu", new MainMenuContainer());
+		
 		startGame(new HearthWindow(windowTitle, windowWidth, windowHeight));
 	}
 	
