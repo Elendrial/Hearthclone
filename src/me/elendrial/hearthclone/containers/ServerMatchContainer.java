@@ -2,7 +2,7 @@ package me.elendrial.hearthclone.containers;
 
 import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.helpers.TextureHelper;
-import me.elendrial.hearthclone.game.Action;
+import me.elendrial.hearthclone.action.Action;
 import me.elendrial.hearthclone.server.ServerProtocol;
 
 public class ServerMatchContainer extends BaseContainer{

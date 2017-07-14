@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.helpers.TextureHelper;
 import me.elendrial.cardGameBase.server.GameClient;
-import me.elendrial.hearthclone.game.Action;
+import me.elendrial.hearthclone.action.Action;
 
 public class ClientMatchContainer extends BaseContainer{
 	
