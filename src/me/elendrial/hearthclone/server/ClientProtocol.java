@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import me.elendrial.cardGameBase.server.GameProtocol;
 import me.elendrial.hearthclone.HearthController;
+import me.elendrial.hearthclone.containers.ClientMatchContainer;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
 import me.elendrial.hearthclone.display.HearthWindow;
 import me.elendrial.hearthclone.general.JsonHandler;
@@ -33,12 +34,13 @@ public class ClientProtocol extends GameProtocol{
 		try {
 		//	System.out.println("[Client]: Waiting to recieve data");
 			data = in.readLine();
-			if(data.contains("disconnect:")) disconnect();
-			else if(data.startsWith("info:")) infoHandler(data);
-			else if(data.startsWith("chat:")) chatHandler(data);
-			else if(data.equals("init")) generalSetup();
+			if(data.contains("disconnect:")) 	disconnect();
+			else if(data.startsWith("info:"))	infoHandler(data);
+			else if(data.startsWith("chat:")) 	chatHandler(data);
+			else if(data.equals("init")) 		generalSetup();
 			else if(data.startsWith("challenge:")) challengeHandler(data);
-
+			else if(data.startsWith("match:")) 	matchHandler(data);
+			
 			System.out.println("[Client]: From Server: " + data);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -79,7 +81,6 @@ public class ClientProtocol extends GameProtocol{
 	@SuppressWarnings("unchecked")
 	public static ArrayList<String> getChatLogs(){return (ArrayList<String>) chatLogs.clone();}
 	
-	
 	public void chatHandler(String data){
 		// Special Cases
 		if(data.contains("-logsinc")){
@@ -98,7 +99,6 @@ public class ClientProtocol extends GameProtocol{
 		((HearthWindow) HearthController.mainWindow).updateChat();
 	}
 	
-
 	public void infoHandler(String data){
 		if(data.contains("-userListInc")){
 			String data2;
@@ -174,6 +174,16 @@ public class ClientProtocol extends GameProtocol{
 			for(String s : deck.cardIDs) sendData(s);
 			sendData("-idListFin");
 			
+		}
+	}
+	
+	public void matchHandler(String data){
+		if(data.contains("-contInitInc")){
+			ClientMatchContainer c = new ClientMatchContainer();
+			// TODO: (Priority: v. High) Save the decisions made in challenge phase somewhere so they can be put directly into the matchContainer without
+			// a back and forth between server & client.
+			
+			return;
 		}
 	}
 	

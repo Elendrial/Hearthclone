@@ -20,7 +20,7 @@ public class ServerProtocol extends GameProtocol{
 	private static ArrayList<String> chatLogs = new ArrayList<String>();
 	private String username;
 	protected ServerProtocol opponent;
-	protected HearthstoneDeck deck;
+	public HearthstoneDeck deck;
 	protected RuleSet ruleSet;
 	protected ServerMatchContainer match;
 	
@@ -40,17 +40,18 @@ public class ServerProtocol extends GameProtocol{
 		super.sendData(s);
 	}
 	
+	//TODO: Rewrite this code to be less messy and higher quality. (Priority: Low)
 	@Override
 	public void recieveData() {
 		String data;
 		try {
 		//	System.out.println("[Server-" + id + "]: Waiting to recieve data");
 			data = in.readLine();
-			if(data.startsWith("disconnect:")) disconnect();
-			else if(data.startsWith("info:")) infoHandler(data);
-			else if(data.startsWith("chat:")) chatHandler(data);
+			if(data.startsWith("disconnect:")) 	disconnect();
+			else if(data.startsWith("info:")) 	infoHandler(data);
+			else if(data.startsWith("chat:")) 	chatHandler(data);
 			else if(data.startsWith("challenge:")) challengeHandler(data);
-			else if(data.equals("init")) generalSetup();
+			else if(data.equals("init")) 		generalSetup();
 
 			System.out.println("[Server-" + id + "][From Client]: " + data);
 		} catch (IOException e) {
@@ -126,7 +127,7 @@ public class ServerProtocol extends GameProtocol{
 		}
 	}
 
-	//TODO: Finish challenge handler (Priority: High)
+	//TODO: Finish challenge handler (Priority: High)(Mostly done I think)
 	public void challengeHandler(String data) throws IOException{
 		if(data.contains("-init ")){
 			// --> Before: check other client agrees to match with selected rule set.
@@ -141,7 +142,7 @@ public class ServerProtocol extends GameProtocol{
 				if(((ServerProtocol) connection).username.equals(opponentUsername)) connection.sendData("challenge:-chalBy " + username + " -ruleSet " + data.split("-")[2].replace("ruleSet ", ""));
 			
 			String data2 = in.readLine();
-			if(data2.contains("deny")){
+			if(data2.contains("-deny")){
 				sendData("challenge:-reject " + opponentUsername); 
 				return;
 			}
@@ -155,17 +156,11 @@ public class ServerProtocol extends GameProtocol{
 			// First : Ask which deck each player would like to use
 			sendData("challenge:-chooseDeck");
 			opponent.sendData("challenge:-chooseDeck");
-			
-			// Second: Check card collections are compatible.
-				// Uses hashes from all the sets that will be used, may need to be improved.
-			
-			// Third : Setup a MatchContainer with these two decks
-			// Fourth: Tell both clients that setup is complete, have them load their respective MatchContainers
-			// --> After: All draws come from server, client and server check whether plays are valid etc.
 		}
 		
 		if(data.contains("-deckChosen ")){
 			// Second: Check card collections are compatible.
+			// TODO: Rewrite this in a better way (Priority: Low)
 			hasSetupContainer = false;
 			
 			try{
@@ -176,6 +171,7 @@ public class ServerProtocol extends GameProtocol{
 					
 					hasSetupContainer = true;
 					setupGameContainer();
+					match.setReady(this);
 					
 					return;
 				}
@@ -203,6 +199,7 @@ public class ServerProtocol extends GameProtocol{
 			
 			hasSetupContainer = true;
 			setupGameContainer();
+			match.setReady(this);
 			
 			//TODO: Somehow check that the other player has all the cards WITHOUT sending the cards to them (Priority: Medium-High)
 			// Maybe ask them to send all the sets they have + hashcodes for them? If hashcodes match then go ahead, if not check individual cards? Might take a while :/
@@ -223,11 +220,12 @@ public class ServerProtocol extends GameProtocol{
 	
 	protected boolean hasSetupContainer = false;
 	protected void setupGameContainer(){
+		// Third : Setup a MatchContainer with these two decks
 		if(this.opponent.hasSetupContainer) return;
 		
 		match = new ServerMatchContainer();
 		match.decks = new HearthstoneDeck[]{this.deck, opponent.deck};
-		
+		match.selectFirst(this, opponent);
 		
 		opponent.match = this.match;
 	}
