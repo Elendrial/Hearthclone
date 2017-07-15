@@ -17,6 +17,9 @@ import me.elendrial.hearthclone.general.JsonHandler;
 
 public class ClientProtocol extends GameProtocol{
 
+	private HearthstoneDeck deck;
+	private boolean inMatch = false;
+	
 	@Override
 	public void run() {
 		while(!socket.isClosed()) recieveData();
@@ -132,6 +135,11 @@ public class ClientProtocol extends GameProtocol{
 	
 	public void challengeHandler(String data) throws IOException{
 		if(data.contains("-init ")){
+			if(inMatch) {
+				sendData("challenge:-deny");
+				return;
+			}
+			
 			// TODO: Implement this into an in-window menu system, rather than an additional popup. (Priority: Low)
 			String opponentUsername = data.split("-")[1].replace("init ", "");
 			String ruleSet = data.split("-")[2].replace("ruleSet ", "");
@@ -140,8 +148,12 @@ public class ClientProtocol extends GameProtocol{
 			
 			if(accept != 0){
 				sendData("challenge:-deny");
+				inMatch = true;
 			}
-			else sendData("challenge:-accept");
+			else{
+				sendData("challenge:-accept");
+				HearthController.containers.put("match", new ClientMatchContainer());
+			}
 			return;
 		}
 		
@@ -159,7 +171,7 @@ public class ClientProtocol extends GameProtocol{
 				deckName = JOptionPane.showInputDialog(null, "Which deck would you like to use?");
 			}
 			
-			HearthstoneDeck deck = JsonHandler.loadDeck(deckName);
+			deck = JsonHandler.loadDeck(deckName);
 			sendData("challenge:-deckChosen " + deckName + "-version " + deck.version);
 			
 			String data2 = in.readLine();
@@ -177,14 +189,22 @@ public class ClientProtocol extends GameProtocol{
 		}
 	}
 	
-	public void matchHandler(String data){
+	public void matchHandler(String data) throws NumberFormatException, IOException{
 		if(data.contains("-contInitInc")){
-			ClientMatchContainer c = new ClientMatchContainer();
+			
+			boolean first = Boolean.parseBoolean(in.readLine());
+			int oppDeckSize = Integer.parseInt(in.readLine());
+			
 			// TODO: (Priority: v. High) Save the decisions made in challenge phase somewhere so they can be put directly into the matchContainer without
 			// a back and forth between server & client.
-			
+
+			((ClientMatchContainer) HearthController.containers.get("match")).setupMatch(first, deck, oppDeckSize);
 			return;
 		}
+	}
+
+	public void endGame() {
+		inMatch = false;
 	}
 	
 }

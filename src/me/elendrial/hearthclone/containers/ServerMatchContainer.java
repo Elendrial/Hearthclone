@@ -4,12 +4,17 @@ import me.elendrial.cardGameBase.containers.BaseContainer;
 import me.elendrial.cardGameBase.helpers.TextureHelper;
 import me.elendrial.hearthclone.HearthController;
 import me.elendrial.hearthclone.action.Action;
+import me.elendrial.hearthclone.cards.HearthstoneCard;
+import me.elendrial.hearthclone.cards.HearthstoneCardContainer;
+import me.elendrial.hearthclone.ruleSets.RuleSet;
 import me.elendrial.hearthclone.server.ServerProtocol;
 
 public class ServerMatchContainer extends BaseContainer{
 	public ServerProtocol player1, player2;
 	public boolean p1Ready = false, p2Ready = false;
 	public boolean p1HeroPower, p2HeroPower;
+	public int p1cardsInHand, p2cardsInHand;
+	public RuleSet ruleSet;
 	
 	public ServerMatchContainer(){
 		this.players = 2;
@@ -30,6 +35,20 @@ public class ServerMatchContainer extends BaseContainer{
 	
 	public boolean isValid(Action a){
 		return false;
+	}
+	
+	//TODO: Find a way of not having this chunk of repeated code. (Priority: Low)
+	public void startTurn(){
+		if(turn%2==0){
+			player1.sendData("match:-startTurn");
+			HearthstoneCard card = (HearthstoneCard) decks[0].drawCard();
+			HearthstoneCardContainer container = new HearthstoneCardContainer(card);
+			
+		}
+		
+		else{
+			
+		}
 	}
 	
 	public void endTurn(){
@@ -58,7 +77,7 @@ public class ServerMatchContainer extends BaseContainer{
 	
 	public void setupClients(){
 		player1.sendData("match:-contInitInc");
-		
+		player1.sendData("");
 		player1.sendData("match:-contInitFin");
 		
 		player2.sendData("match:-init oppDeckSpecs");

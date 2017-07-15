@@ -137,7 +137,7 @@ public class ServerProtocol extends GameProtocol{
 				sendData("challenge:-reject");
 				return;
 			}
-			
+			// TODO: Check both players & server have RuleSet.
 			for(GameProtocol connection : GameServer.getConnections()) 
 				if(((ServerProtocol) connection).username.equals(opponentUsername)) connection.sendData("challenge:-chalBy " + username + " -ruleSet " + data.split("-")[2].replace("ruleSet ", ""));
 			
@@ -159,7 +159,7 @@ public class ServerProtocol extends GameProtocol{
 		}
 		
 		if(data.contains("-deckChosen ")){
-			// Second: Check card collections are compatible.
+			// Second: Check card collections are compatible & decks agree with ruleset.
 			// TODO: Rewrite this in a better way (Priority: Low)
 			hasSetupContainer = false;
 			
@@ -226,6 +226,7 @@ public class ServerProtocol extends GameProtocol{
 		match = new ServerMatchContainer();
 		match.decks = new HearthstoneDeck[]{this.deck, opponent.deck};
 		match.selectFirst(this, opponent);
+		match.ruleSet = ruleSet;
 		
 		opponent.match = this.match;
 	}

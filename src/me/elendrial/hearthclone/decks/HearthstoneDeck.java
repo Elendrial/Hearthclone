@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import me.elendrial.cardGameBase.cards.StandardCard;
 import me.elendrial.cardGameBase.decks.StandardDeck;
 import me.elendrial.hearthclone.cardVars.ClassEnum;
+import me.elendrial.hearthclone.cards.UnknownCard;
 
 public class HearthstoneDeck extends StandardDeck{
 
@@ -31,6 +32,13 @@ public class HearthstoneDeck extends StandardDeck{
 
 	public HearthstoneDeck(int maxDeckSize) {
 		super(maxDeckSize);
+	}
+
+	public static HearthstoneDeck getUnknownDeck(int oppDeckSize, int maxDeckSize) {
+		ArrayList<StandardCard> udeck = new ArrayList<StandardCard>();
+		for(int i = 0; i < oppDeckSize; i++) udeck.add(new UnknownCard());
+		
+		return new HearthstoneDeck(maxDeckSize, udeck);
 	}
 
 }
