@@ -18,6 +18,7 @@ import me.elendrial.hearthclone.general.JsonHandler;
 public class ClientProtocol extends GameProtocol{
 
 	private HearthstoneDeck deck;
+	private String ruleSet;
 	private boolean inMatch = false;
 	
 	@Override
@@ -37,14 +38,14 @@ public class ClientProtocol extends GameProtocol{
 		try {
 		//	System.out.println("[Client]: Waiting to recieve data");
 			data = in.readLine();
+			System.out.println("[Client]: Recieved <<<<<<<< " + data);
+			
 			if(data.contains("disconnect:")) 	disconnect();
 			else if(data.startsWith("info:"))	infoHandler(data);
 			else if(data.startsWith("chat:")) 	chatHandler(data);
 			else if(data.equals("init")) 		generalSetup();
 			else if(data.startsWith("challenge:")) challengeHandler(data);
 			else if(data.startsWith("match:")) 	matchHandler(data);
-			
-			System.out.println("[Client]: From Server: " + data);
 		} catch (IOException e) {
 			e.printStackTrace();
 			disconnect();
@@ -142,17 +143,19 @@ public class ClientProtocol extends GameProtocol{
 			
 			// TODO: Implement this into an in-window menu system, rather than an additional popup. (Priority: Low)
 			String opponentUsername = data.split("-")[1].replace("init ", "");
-			String ruleSet = data.split("-")[2].replace("ruleSet ", "");
+			ruleSet = data.split("-")[2].replace("ruleSet ", "");
 			
 			int accept = JOptionPane.showOptionDialog(null, "You have recieved a challenge from " + opponentUsername + " using the " + ruleSet + "rule set.", "Challenge", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Accept", "Deny"}, "Accept");
 			
 			if(accept != 0){
 				sendData("challenge:-deny");
-				inMatch = true;
+				inMatch = false;
 			}
 			else{
 				sendData("challenge:-accept");
 				HearthController.containers.put("match", new ClientMatchContainer());
+				inMatch = true;
+				
 			}
 			return;
 		}
@@ -195,10 +198,7 @@ public class ClientProtocol extends GameProtocol{
 			boolean first = Boolean.parseBoolean(in.readLine());
 			int oppDeckSize = Integer.parseInt(in.readLine());
 			
-			// TODO: (Priority: v. High) Save the decisions made in challenge phase somewhere so they can be put directly into the matchContainer without
-			// a back and forth between server & client.
-
-			((ClientMatchContainer) HearthController.containers.get("match")).setupMatch(first, deck, oppDeckSize);
+			((ClientMatchContainer) HearthController.containers.get("match")).setupMatch(first, ruleSet, deck, oppDeckSize);
 			return;
 		}
 	}

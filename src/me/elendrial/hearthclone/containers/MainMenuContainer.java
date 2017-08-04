@@ -37,7 +37,9 @@ public class MainMenuContainer extends BaseContainer{
 		if(!(arg.getX() < 100 && arg.getY() < 100)) return;
 		
 		String user = JOptionPane.showInputDialog(null, "Which player would you like to challenge?");
-		if(GameClient.isRunning()) GameClient.getProtocol().sendData("challenge:-init " + user);
+		String ruleSet = JOptionPane.showInputDialog(null, "Which rule set would you like to use?");
+		System.out.println("Sending challenge");
+		if(GameClient.isRunning()) GameClient.getProtocol().sendData("challenge:-init " + user + "-ruleSet " + ruleSet);
 	}
 	
 }

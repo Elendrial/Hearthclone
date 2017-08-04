@@ -47,13 +47,14 @@ public class ServerProtocol extends GameProtocol{
 		try {
 		//	System.out.println("[Server-" + id + "]: Waiting to recieve data");
 			data = in.readLine();
+			System.out.println("[Server-" + id + "]: Recieved <<<<<<<< " + data);
+			
 			if(data.startsWith("disconnect:")) 	disconnect();
 			else if(data.startsWith("info:")) 	infoHandler(data);
 			else if(data.startsWith("chat:")) 	chatHandler(data);
 			else if(data.startsWith("challenge:")) challengeHandler(data);
 			else if(data.equals("init")) 		generalSetup();
 
-			System.out.println("[Server-" + id + "][From Client]: " + data);
 		} catch (IOException e) {
 			if(e instanceof SocketException) disconnect();
 			else e.printStackTrace();
@@ -131,10 +132,10 @@ public class ServerProtocol extends GameProtocol{
 	public void challengeHandler(String data) throws IOException{
 		if(data.contains("-init ")){
 			// --> Before: check other client agrees to match with selected rule set.
-			String opponentUsername = data.split("-")[1].replace("init ", "");
+			String opponentUsername = data.split("-")[1].replace("ini	t ", "");
 			
-			if(HearthController.usersOnHost.contains(opponentUsername) && opponentUsername != username){
-				sendData("challenge:-reject");
+			if(!HearthController.usersOnHost.contains(opponentUsername) || opponentUsername == username){
+				sendData("challenge:-reject -reason:noUserWithName");
 				return;
 			}
 			// TODO: Check both players & server have RuleSet.
@@ -143,7 +144,7 @@ public class ServerProtocol extends GameProtocol{
 			
 			String data2 = in.readLine();
 			if(data2.contains("-deny")){
-				sendData("challenge:-reject " + opponentUsername); 
+				sendData("challenge:-reject -reason:deniedBy" + opponentUsername); 
 				return;
 			}
 			

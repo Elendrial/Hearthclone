@@ -45,6 +45,10 @@ public class JsonHandler {
 		
 	}
 	
+	public static RuleSet getRuleSet(String ruleSet){
+		return null;
+	}
+	
 	public static HearthstoneDeck loadDeck(String deckName) throws IOException{
 		Gson gson = new Gson();
 		JsonReader json = new JsonReader(new FileReader("resources/json/decks/" + deckName));

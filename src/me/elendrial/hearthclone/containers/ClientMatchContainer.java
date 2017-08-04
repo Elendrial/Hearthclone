@@ -10,6 +10,7 @@ import me.elendrial.cardGameBase.helpers.TextureHelper;
 import me.elendrial.cardGameBase.server.GameClient;
 import me.elendrial.hearthclone.action.Action;
 import me.elendrial.hearthclone.decks.HearthstoneDeck;
+import me.elendrial.hearthclone.general.JsonHandler;
 import me.elendrial.hearthclone.ruleSets.RuleSet;
 import me.elendrial.hearthclone.server.ClientProtocol;
 
@@ -25,8 +26,10 @@ public class ClientMatchContainer extends BaseContainer{
 		this.turn = 0;
 	}
 	
-	public void setupMatch(boolean first, HearthstoneDeck deck, int oppDeckSize){
+	public void setupMatch(boolean first, String rSet, HearthstoneDeck deck, int oppDeckSize){
 		this.first = first;
+		
+		ruleSet = JsonHandler.getRuleSet(rSet);
 		
 		this.decks = new HearthstoneDeck[]{deck, HearthstoneDeck.getUnknownDeck(oppDeckSize, ruleSet.maxTotalDeckSize)};
 		decks[0].setPosition(50, 50); // TODO: Make this all relative so the decks go in the right place (Priority: Medium)
@@ -75,7 +78,9 @@ public class ClientMatchContainer extends BaseContainer{
 	public void keyPressed(KeyEvent arg){
 		if(arg.getKeyCode() == KeyEvent.VK_ESCAPE){
 			int quit = JOptionPane.showOptionDialog(null, "Would you like to quit the match?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Yes", "No"}, "No");
-
+			if(quit == 0){
+				//TODO: Quite game (Priority: Medium)
+			}
 		}
 	}
 	
